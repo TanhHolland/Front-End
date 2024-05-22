@@ -30,13 +30,13 @@ const UserPhotos = () => {
     const fetchPhotos = async () => {
       try {
         const response = await axios.get(
-          `https://9mlf5s-8081.csb.app/api/photo/photosOfUser/${userId}`
+          `https://nzgzhz-8081.csb.app/api/photo/photosOfUser/${userId}`,
         );
         setPhotos(response.data);
         setError(null);
       } catch (error) {
         if (error.response && error.response.status === 404) {
-          setError("Không tìm thấy ảnh của người này 😢");
+          setError("Not found picture");
         } else {
           console.error("Error fetching photos:", error);
         }
@@ -57,20 +57,20 @@ const UserPhotos = () => {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        `https://9mlf5s-8081.csb.app/api/photo/${photoId}/comments`,
+        `https://nzgzhz-8081.csb.app/api/photo/${photoId}/comments`,
         { comment: commentText, user_id: userId, user_name: userName },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       // Update the photos state to reflect the new comment
       setPhotos((prevPhotos) =>
         prevPhotos.map((photo) =>
-          photo._id === photoId ? response.data : photo
-        )
+          photo._id === photoId ? response.data : photo,
+        ),
       );
 
       setCommentText(""); // Clear the comment input field
@@ -95,14 +95,14 @@ const UserPhotos = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `https://9mlf5s-8081.csb.app/api/photo/uploadPhoto`,
+        `https://nzgzhz-8081.csb.app/api/photo/uploadPhoto`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       // Add the new photo to the photos state
@@ -117,9 +117,6 @@ const UserPhotos = () => {
 
   return (
     <div>
-      <Typography variant="body1">
-        Đây là trang xem ảnh của người dùng trong ứng dụng PhotoShare.
-      </Typography>
       {userId === loggedInUserId && (
         <Card variant="outlined" style={{ marginBottom: "20px" }}>
           <CardContent>
@@ -180,7 +177,7 @@ const Photo = ({
           <strong>Ngày đăng:</strong> {new Date(date_time).toLocaleString()}
         </Typography>
         <img
-          src={`https://9mlf5s-8081.csb.app/uploads/${file_name}`}
+          src={`https://nzgzhz-8081.csb.app/uploads/${file_name}`}
           alt="Ảnh"
           style={{
             maxWidth: "100%",

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Avatar,
   Button,
   TextField,
   Link,
@@ -10,28 +9,38 @@ import {
   Container,
   CssBaseline,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Login() {
   const [user_name, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [isMess, setIsMess] = useState(false);
+  const [isAlert, setIsAlert] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "https://9mlf5s-8081.csb.app/api/user/login",
+        "https://nzgzhz-8081.csb.app/api/user/login",
         { user_name, password },
       );
+      setIsAlert(true);
+      setIsMess("Sucess");
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user_id", response.data._id);
       localStorage.setItem("user_name", response.data.user_name);
-      navigate("/");
+      setIsMess("Sucess");
+      setTimeout(() => {
+        setIsAlert(false);
+        navigate("/");
+      }, 2000);
     } catch (error) {
       console.error("Login failed:", error);
+      setIsMess("Failed");
+      setIsAlert(true);
     }
   };
 
@@ -40,25 +49,23 @@ export default function Login() {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 20,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
         <Typography component="h1" variant="h5">
-          Đăng nhập
+          Login
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
+            label="username"
+            variant="standard"
             margin="normal"
             required
             fullWidth
             id="user_name"
-            label="Username"
             name="user_name"
             autoComplete="username"
             autoFocus
@@ -66,32 +73,36 @@ export default function Login() {
             onChange={(e) => setUserName(e.target.value)}
           />
           <TextField
+            label="password"
+            variant="standard"
             margin="normal"
             required
             fullWidth
             name="password"
-            label="Password"
             type="password"
             id="password"
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
+          <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
             Login
           </Button>
           <Grid container>
             <Grid item>
               <Link href="/register" variant="body2">
-                {"Chưa có tài khoản? Đăng ký ngay"}
+                {"Register"}
               </Link>
             </Grid>
           </Grid>
+          {isAlert && (
+            <Alert
+              severity={isMess === "Sucess" ? "success" : "error"}
+              sx={{ mt: 3, mb: 2 }}
+            >
+              {isMess}
+            </Alert>
+          )}
         </Box>
       </Box>
     </Container>

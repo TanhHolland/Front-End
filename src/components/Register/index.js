@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Avatar,
   Button,
   TextField,
   Link,
@@ -10,7 +9,7 @@ import {
   Container,
   CssBaseline,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -20,27 +19,36 @@ export default function Register() {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [occupation, setOccupation] = useState("");
+  const [isMess, setIsMess] = useState(false);
+  const [isAlert, setIsAlert] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "https://9mlf5s-8081.csb.app/api/user/register",
+        "https://nzgzhz-8081.csb.app/api/user/register",
         {
           user_name,
           password,
           location,
           description,
           occupation,
-        }
+        },
       );
+      setIsAlert(true);
+      setIsMess("Sucess Register");
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user_id", response.data._id);
       localStorage.setItem("user_name", response.data.user_name);
-      navigate("/");
+      setTimeout(() => {
+        setIsAlert(false);
+        navigate("/");
+      }, 2000);
     } catch (error) {
       console.error("Registration failed:", error);
+      setIsMess("Account username already exist");
+      setIsAlert(true);
     }
   };
 
@@ -49,25 +57,24 @@ export default function Register() {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 19,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
         <Typography component="h1" variant="h5">
-          Đăng ký
+          Register
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
+            label="username"
+            variant="standard"
             margin="normal"
+            argin="normal"
             required
             fullWidth
             id="user_name"
-            label="Username"
             name="user_name"
             autoComplete="username"
             autoFocus
@@ -75,11 +82,12 @@ export default function Register() {
             onChange={(e) => setUserName(e.target.value)}
           />
           <TextField
+            label="password"
+            variant="standard"
             margin="normal"
             required
             fullWidth
             name="password"
-            label="Password"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -87,6 +95,7 @@ export default function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <TextField
+            variant="standard"
             margin="normal"
             required
             fullWidth
@@ -98,6 +107,7 @@ export default function Register() {
             onChange={(e) => setLocation(e.target.value)}
           />
           <TextField
+            variant="standard"
             margin="normal"
             required
             fullWidth
@@ -109,6 +119,7 @@ export default function Register() {
             onChange={(e) => setDescription(e.target.value)}
           />
           <TextField
+            variant="standard"
             margin="normal"
             required
             fullWidth
@@ -119,21 +130,24 @@ export default function Register() {
             value={occupation}
             onChange={(e) => setOccupation(e.target.value)}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Đăng ký ngay
+          <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+            Register
           </Button>
           <Grid container>
             <Grid item>
               <Link href="/login" variant="body2">
-                {"Có tài khoản rồi sao? Đăng nhập ngay"}
+                {"Login now"}
               </Link>
             </Grid>
           </Grid>
+          {isAlert && (
+            <Alert
+              severity={isMess === "Sucess Register" ? "success" : "error"}
+              sx={{ mt: 3, mb: 2 }}
+            >
+              {isMess}
+            </Alert>
+          )}
         </Box>
       </Box>
     </Container>
