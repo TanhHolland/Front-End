@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, Alert } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -26,7 +26,7 @@ function UserDetail() {
   }, [userId]);
 
   if (!user) {
-    return <Typography variant="body1">Loading...</Typography>;
+    return <Alert severity="error">Vui lòng chờ</Alert>;
   }
 
   return (

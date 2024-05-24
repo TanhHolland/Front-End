@@ -25,6 +25,14 @@ export default function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (user_name === "" || password === "") {
+      setIsMess("Vui lòng điền đầy đủ username và password");
+      setIsAlert(true);
+      setTimeout(() => {
+        setIsAlert(false);
+      }, 2000);
+      return;
+    }
     try {
       const response = await axios.post(
         "https://nzgzhz-8081.csb.app/api/user/register",
@@ -49,6 +57,9 @@ export default function Register() {
       console.error("Registration failed:", error);
       setIsMess("Account username already exist");
       setIsAlert(true);
+      setTimeout(() => {
+        setIsAlert(false);
+      }, 2000);
     }
   };
 
